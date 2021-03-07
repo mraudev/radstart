@@ -18,7 +18,6 @@ import { autoUpdater } from "electron-updater";
 const isDevelopment: boolean = process.env.NODE_ENV !== "production";
 
 process.env.FORCE_COLOR = "1";
-process.env.GH_TOKEN = "f9b67ec44577957672c685ec62279f29f64703e8";
 
 // keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
