@@ -51,19 +51,19 @@ export default Vue.extend({
       mergePath: "",
    }),
    methods: {
-      checkMergePathDisabled: function(): boolean {
+      checkMergePathDisabled: function (): boolean {
          if (this.mergePath) {
             return false;
          }
          return true;
       },
-      openMergePath: function(): void {
+      openMergePath: function (): void {
          exec(`start "" "${this.mergePath}"`).unref();
       },
-      setKeyHandler: function(): void {
+      setKeyHandler: function (): void {
          document.addEventListener("keypress", this.handleKey);
       },
-      handleKey: function(key: any): void {
+      handleKey: function (key: any): void {
          if (store.state.appKeyPressEnabled) {
             if (key.code === "KeyD") {
                this.routeTo("Development");
@@ -84,13 +84,13 @@ export default Vue.extend({
             }
          }
       },
-      routeTo: function(routeName: string): void {
+      routeTo: function (routeName: string): void {
          if (router.currentRoute.name !== routeName) {
             router.push({ name: routeName });
          }
       },
    },
-   mounted: function(): void {
+   mounted: function (): void {
       const setting: any = appSettings.get("settings");
       if (setting && setting.mergePath) {
          this.mergePath = setting.mergePath;
@@ -138,7 +138,11 @@ main.v-main {
    background: #303030;
 }
 
+.v-main {
+   overflow: auto !important;
+}
 #mainContainer {
    overflow: auto !important;
+   height: 100%;
 }
 </style>

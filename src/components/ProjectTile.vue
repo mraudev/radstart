@@ -9,7 +9,7 @@
             </template>
          </v-card-title>
          <v-img class="subtitle-gradient pa-0">
-            <v-card-subtitle class="py-0">
+            <v-card-subtitle class="py-0 px-0">
                <v-btn
                   block
                   tile
@@ -44,7 +44,7 @@ export default Vue.extend({
       ProjectGitActions,
    },
    methods: {
-      openInExplorer: function(project: IProject): void {
+      openInExplorer: function (project: IProject): void {
          exec(`start "" "${project.path}"`).unref();
       },
    },
