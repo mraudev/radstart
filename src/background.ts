@@ -160,7 +160,7 @@ app.on("ready", async () => {
    tray.setTitle(getAppName());
    tray.setToolTip(getAppName());
 
-   tray.on("double-click", async function() {
+   tray.on("double-click", async function () {
       if (win.isMinimized()) {
          win.setSkipTaskbar(getSkipIconInTaskbar());
          win.restore();
@@ -169,12 +169,12 @@ app.on("ready", async () => {
          win.minimize();
       }
    });
-   tray.on("click", async function() {
+   tray.on("click", async function () {
       if (win.isMinimized()) {
          win.setSkipTaskbar(getSkipIconInTaskbar());
          win.restore();
       } else {
-         win.restore();
+         win.focus();
       }
    });
 
@@ -191,7 +191,7 @@ app.on("ready", async () => {
    createWindow();
 });
 
-app.on("before-quit", function(evt) {
+app.on("before-quit", function (evt) {
    tray.destroy();
 });
 
