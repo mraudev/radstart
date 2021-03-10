@@ -1,15 +1,15 @@
 <template>
-   <v-system-bar window app class="draggable pr-0" color="grey darken-3">
+   <v-system-bar window app class="draggable pr-0" color="primary">
       <div class="topdiv"></div>
       <img src="icon.png" height="20px" width="20px" class="mr-3" />
       <span>{{ wintitle }}</span>
 
       <v-spacer></v-spacer>
       <v-btn tile text class="appButton nondraggable px-0" @click="minimize()">
-         <v-icon class="mr-0">mdi-window-minimize</v-icon>
+         <v-icon class="mr-0">fal fa-window-minimize</v-icon>
       </v-btn>
       <v-btn text tile class="appButton nondraggable px-0" @click="maximize()">
-         <v-icon class="mr-0">{{ `mdi-${maxIcon}` }}</v-icon>
+         <v-icon class="mr-0">{{ `${maxIcon}` }}</v-icon>
       </v-btn>
       <v-btn
          tile
@@ -17,7 +17,7 @@
          color="red darken-5"
          @click="close()"
       >
-         <v-icon class="mr-0">mdi-window-close</v-icon>
+         <v-icon class="mr-0">fal fa-times</v-icon>
       </v-btn>
    </v-system-bar>
 </template>
@@ -37,7 +37,7 @@ export default Vue.extend({
    data(): IComponentData {
       return {
          wintitle: "",
-         maxIcon: "window-maximize",
+         maxIcon: "fal fa-window-maximize",
          appIconPath: "",
       };
    },
@@ -50,9 +50,9 @@ export default Vue.extend({
       },
       setMaximizeIcon: async function(): Promise<void> {
          await ipcRenderer.invoke("get-window-maximized").then(result => {
-            let ico: string = "window-maximize";
+            let ico: string = "fal fa-window-maximize";
             if (result) {
-               ico = "window-restore";
+               ico = "fal fa-window-restore";
             }
             this.maxIcon = ico;
          });

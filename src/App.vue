@@ -10,60 +10,48 @@
          </v-container>
       </v-main>
 
-      <v-footer padless app height="50px">
-         <v-card width="100%">
-            <v-card-actions>
-               <v-btn
-                  tile
-                  right
-                  text
-                  :disabled="checkMergePathDisabled()"
-                  @click="openMergePath()"
-               >
-                  <!-- <v-icon left>mdi-folder-open</v-icon> Merge -->
-                  <v-icon left large color="amber darken-1">
-                     mdi-alpha-m-box-outline </v-icon
-                  >erge
-               </v-btn>
-            </v-card-actions>
-         </v-card>
-      </v-footer>
+      <Footer :updateAvailable="hasUpdate" />
    </v-app>
 </template>
 
 <script lang="ts">
 import SystemBar from "./components/window/SystemBar.vue";
 import AppBar from "./components/window/AppBar.vue";
-import { exec } from "child_process";
-import appSettings from "./classes/appSettings";
+import Footer from "./components/window/Footer.vue";
 import Vue from "vue";
+import { exec } from "child_process";
 import router from "./router";
 import store from "./store";
+import appSettings from "./classes/appSettings";
+import { ipcRenderer } from "electron";
 interface IComponentData {
    mergePath: string;
+   hasUpdate: boolean;
 }
 export default Vue.extend({
    name: "App",
 
-   components: { SystemBar, AppBar },
+   components: { SystemBar, AppBar, Footer },
 
    data: (): IComponentData => ({
       mergePath: "",
+      hasUpdate: false,
    }),
+
    methods: {
-      checkMergePathDisabled: function (): boolean {
+      checkMergePathDisabled: function(): boolean {
          if (this.mergePath) {
             return false;
          }
          return true;
       },
-      openMergePath: function (): void {
+      openMergePath: function(): void {
          exec(`start "" "${this.mergePath}"`).unref();
       },
-      setKeyHandler: function (): void {
+      setKeyHandler: function(): void {
          document.addEventListener("keypress", this.handleKey);
       },
-      handleKey: function (key: any): void {
+      handleKey: function(key: any): void {
          if (store.state.appKeyPressEnabled) {
             if (key.code === "KeyD") {
                this.routeTo("Development");
@@ -84,13 +72,13 @@ export default Vue.extend({
             }
          }
       },
-      routeTo: function (routeName: string): void {
+      routeTo: function(routeName: string): void {
          if (router.currentRoute.name !== routeName) {
             router.push({ name: routeName });
          }
       },
    },
-   mounted: function (): void {
+   mounted: function(): void {
       const setting: any = appSettings.get("settings");
       if (setting && setting.mergePath) {
          this.mergePath = setting.mergePath;
@@ -98,7 +86,9 @@ export default Vue.extend({
    },
    created(): void {
       this.setKeyHandler();
-      // this.$router.push("/");
+      ipcRenderer.invoke("check-for-update").then(result => {
+         this.hasUpdate = result;
+      });
    },
    destroyed(): void {
       document.removeEventListener("keypress", this.handleKey);

@@ -10,7 +10,7 @@
    >
       <v-card flat tile>
          <v-card-title>
-            <v-icon left>mdi-apps</v-icon>
+            <v-icon left>fal fa-cube</v-icon>
             {{ title }}
             Apps
          </v-card-title>
@@ -19,7 +19,7 @@
                <v-subheader inset>Apps</v-subheader>
                <v-list-item v-for="data in project.apps" :key="data">
                   <v-list-item-avatar>
-                     <v-icon>mdi-code-braces</v-icon>
+                     <v-icon>fa fa-cube</v-icon>
                   </v-list-item-avatar>
                   <v-list-item-content>
                      <v-list-item-title>
@@ -29,7 +29,7 @@
                   </v-list-item-content>
                   <v-list-item-action>
                      <v-btn icon tile v-on:click="removeApp(data)">
-                        <v-icon>mdi-minus</v-icon>
+                        <v-icon>fal fa-minus</v-icon>
                      </v-btn>
                   </v-list-item-action>
                </v-list-item>
@@ -37,13 +37,15 @@
          </v-card-text>
          <v-card-actions>
             <v-btn icon tile v-on:click="openFile()">
-               <v-icon>mdi-plus</v-icon>
+               <v-icon>fal fa-plus</v-icon>
             </v-btn>
             <v-spacer></v-spacer>
             <v-btn text tile color="red" v-on:click="cancel()">
+               <v-icon left>fal fa-times-circle</v-icon>
                Abbrechen
             </v-btn>
             <v-btn text tile color="green" v-on:click="save(project)">
+               <v-icon left>fal fa-save</v-icon>
                Speichern
             </v-btn>
          </v-card-actions>

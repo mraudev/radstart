@@ -32,29 +32,32 @@
                         type="number"
                         class="centered-input"
                         v-model="dialogData.version"
-                        :prepend-icon="'mdi-minus'"
-                        :append-outer-icon="'mdi-plus'"
+                        :prepend-icon="'fal fa-minus'"
+                        :append-outer-icon="'fal fa-plus'"
                         @click:append-outer="dialogData.version += 1"
                         @click:prepend="dialogData.version -= 1"
                      ></v-text-field>
                      <v-text-field
                         v-model="dialogData.path"
-                        :append-icon="'mdi-folder-open'"
+                        :append-icon="'fal fa-folder-open'"
                         @click:append="changePath(dialogData)"
                      ></v-text-field>
                   </v-card-text>
                   <v-card-actions>
                      <v-spacer></v-spacer>
-                     <v-btn text tile color="red" v-on:click="dialog = false"
-                        >Abbrechen</v-btn
-                     >
+                     <v-btn text tile color="red" v-on:click="dialog = false">
+                        <v-icon left>fal fa-times-circle</v-icon>
+                        Abbrechen
+                     </v-btn>
                      <v-btn
                         text
                         tile
                         color="green"
                         v-on:click="saveProject(dialogData)"
-                        >Speichern</v-btn
                      >
+                        <v-icon left>fal fa-save</v-icon>
+                        Speichern
+                     </v-btn>
                   </v-card-actions>
                </v-card>
             </v-dialog>
@@ -75,15 +78,15 @@
                      <td class="text-center">{{ project.version }}</td>
                      <td class="text-center">
                         <v-btn text tile v-on:click="showAppDialog(project)">
-                           <v-icon>mdi-pencil</v-icon>
+                           <v-icon>fal fa-edit</v-icon>
                         </v-btn>
                      </td>
                      <td class="text-center">
                         <v-btn text tile v-on:click="showDialog(project)">
-                           <v-icon>mdi-pencil</v-icon>
+                           <v-icon>fal fa-edit</v-icon>
                         </v-btn>
                         <v-btn text tile v-on:click="deleteProject(project)">
-                           <v-icon>mdi-delete-forever</v-icon>
+                           <v-icon>fal fa-trash-alt</v-icon>
                         </v-btn>
                      </td>
                   </tr>
@@ -94,10 +97,10 @@
       <v-row no-gutters>
          <v-col class="text-right">
             <v-btn v-on:click="reloadSettings()" tile>
-               <v-icon>mdi-reload</v-icon>
+               <v-icon>fal fa-redo</v-icon>
             </v-btn>
             <v-btn v-on:click="newProject()" tile>
-               <v-icon>mdi-plus</v-icon>
+               <v-icon>fal fa-plus</v-icon>
             </v-btn>
          </v-col>
       </v-row>
@@ -106,7 +109,7 @@
             <v-text-field label="Merge Verzeichnis" v-model="mergePath">
                <template v-slot:append>
                   <v-icon :disabled="checkMergePath()" @click="saveMergePath()">
-                     mdi-check
+                     fal fa-check
                   </v-icon>
                </template>
             </v-text-field>

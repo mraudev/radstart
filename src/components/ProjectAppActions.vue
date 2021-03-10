@@ -2,7 +2,7 @@
    <v-row no-gutters>
       <v-col class="pa-2" v-for="app in project.apps" :key="app">
          <v-btn block tile color="amber" v-on:click="open(app)">
-            <v-icon left>mdi-code-braces</v-icon>&nbsp;{{ getAppCaption(app) }}
+            <v-icon left>fal fa-brackets</v-icon> {{ getAppCaption(app) }}
          </v-btn>
       </v-col>
    </v-row>

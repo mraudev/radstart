@@ -14,10 +14,11 @@ import {
 import { createProtocol } from "vue-cli-plugin-electron-builder/lib";
 import path from "path";
 import appSettings from "./classes/appSettings";
-import { autoUpdater } from "electron-updater";
+import { autoUpdater, UpdateCheckResult, UpdateInfo } from "electron-updater";
 const isDevelopment: boolean = process.env.NODE_ENV !== "production";
 
 process.env.FORCE_COLOR = "1";
+autoUpdater.autoDownload = false;
 
 // keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
@@ -97,8 +98,19 @@ function createWindow(): void {
       createProtocol("app");
       // Load the index.html when not in development
       win.loadURL("app://./index.html");
-      autoUpdater.checkForUpdatesAndNotify();
+      // autoUpdater.checkForUpdatesAndNotify();
    }
+
+   //updateCheck
+   ipcMain.handle("check-for-update", () => {
+      autoUpdater.checkForUpdates().then(update => {
+         if (update) {
+            return true;
+         }
+         return false;
+      });
+   });
+
    win.on("close", () => {
       appSettings.set("windowBounds", win.getNormalBounds() as any);
       appSettings.set("maximized", win.isMaximized() as any);
@@ -160,7 +172,7 @@ app.on("ready", async () => {
    tray.setTitle(getAppName());
    tray.setToolTip(getAppName());
 
-   tray.on("double-click", async function () {
+   tray.on("double-click", async function() {
       if (win.isMinimized()) {
          win.setSkipTaskbar(getSkipIconInTaskbar());
          win.restore();
@@ -169,7 +181,7 @@ app.on("ready", async () => {
          win.minimize();
       }
    });
-   tray.on("click", async function () {
+   tray.on("click", async function() {
       if (win.isMinimized()) {
          win.setSkipTaskbar(getSkipIconInTaskbar());
          win.restore();
@@ -191,7 +203,7 @@ app.on("ready", async () => {
    createWindow();
 });
 
-app.on("before-quit", function (evt) {
+app.on("before-quit", function(evt) {
    tray.destroy();
 });
 

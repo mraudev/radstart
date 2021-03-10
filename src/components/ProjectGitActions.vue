@@ -8,22 +8,22 @@
                color="amber darken-2"
                v-on:click="fetch(project)"
             >
-               <v-icon left>mdi-download-multiple</v-icon>Fetch
+               <v-icon left>fal fa-cloud-download</v-icon>Fetch
             </v-btn>
          </v-col>
          <v-col class="pa-2">
             <v-btn block tile color="amber darken-2" v-on:click="mod(project)">
-               <v-icon left>mdi-clipboard-check</v-icon>Mod
+               <v-icon left>fal fa-clipboard-check</v-icon>Mod
             </v-btn>
          </v-col>
          <v-col class="pa-2">
             <v-btn block tile color="amber darken-2" v-on:click="log(project)">
-               <v-icon left>mdi-format-align-justify</v-icon>Log
+               <v-icon left>fal fa-history</v-icon>Log
             </v-btn>
          </v-col>
          <v-col class="pa-2">
             <v-btn block tile color="amber darken-2" v-on:click="push(project)">
-               <v-icon left>mdi-upload-multiple</v-icon>Push
+               <v-icon left>fal fa-cloud-upload</v-icon>Push
             </v-btn>
          </v-col>
          <!-- </v-row>
@@ -36,7 +36,7 @@
                v-on:click="merge(project)"
                :disabled="getMergeDisabled()"
             >
-               <v-icon left>mdi-merge</v-icon>&nbsp;Merge
+               <v-icon left>fal fa-code-merge</v-icon>&nbsp;Merge
             </v-btn>
          </v-col>
       </v-row>
@@ -90,7 +90,7 @@
                   @click="mod(project)"
                   :disabled="getModOverlayDisabled()"
                >
-                  <v-icon>mdi-clipboard-check</v-icon>
+                  <v-icon>fal fa-clipboard-check</v-icon>
                   Check for modifikations
                </v-btn>
                <v-spacer></v-spacer>
@@ -101,7 +101,7 @@
                   @click="closeDialog(project)"
                   :disabled="!overlayCanClose"
                >
-                  <v-icon>mdi-check</v-icon>
+                  <v-icon>fal fa-check</v-icon>
                   Ok
                </v-btn>
             </v-card-actions>

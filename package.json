@@ -20,6 +20,7 @@
   },
   "main": "background.js",
   "dependencies": {
+    "@fortawesome/fontawesome-pro": "^5.15.2",
     "@types/electron-devtools-installer": "^2.2.0",
     "@types/electron-settings": "^3.1.2",
     "@vue/compiler-sfc": "^3.0.7",
