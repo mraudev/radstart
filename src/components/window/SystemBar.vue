@@ -3,7 +3,6 @@
       <div class="topdiv"></div>
       <img src="icon.png" height="20px" width="20px" class="mr-3" />
       <span>{{ wintitle }}</span>
-
       <v-spacer></v-spacer>
       <v-btn tile text class="appButton nondraggable px-0" @click="minimize()">
          <v-icon class="mr-0">fal fa-window-minimize</v-icon>
@@ -30,6 +29,7 @@ interface IComponentData {
    wintitle: string;
    maxIcon: string;
    appIconPath: string;
+   hasUpdate: boolean;
 }
 
 export default Vue.extend({
@@ -39,6 +39,7 @@ export default Vue.extend({
          wintitle: "",
          maxIcon: "fal fa-window-maximize",
          appIconPath: "",
+         hasUpdate: false,
       };
    },
    methods: {

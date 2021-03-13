@@ -15,24 +15,38 @@
                erge
             </v-btn>
             <v-spacer />
-            <v-tooltip color="error" top v-if="updateAvailable">
+            <v-tooltip :color="updateAvailable ? 'error' : 'success'" top>
                <template v-slot:activator="{ on, attrs }">
-                  <v-btn color="error" v-bind="attrs" v-on="on" text tile>
+                  <v-btn
+                     color="error"
+                     v-bind="attrs"
+                     v-on="on"
+                     text
+                     tile
+                     plain
+                     v-if="updateAvailable"
+                     v-on:click="showUpdate()"
+                  >
                      <v-icon>fal fa-comment-alt-exclamation</v-icon>
                   </v-btn>
+                  <v-btn
+                     color="success"
+                     v-bind="attrs"
+                     v-on="on"
+                     text
+                     tile
+                     plain
+                     v-else
+                  >
+                     <v-icon>fal fa-comment-alt-check</v-icon>
+                  </v-btn>
                </template>
-               <span>Update verfügbar!</span>
+               <span v-if="updateAvailable">Update verfügbar!</span>
+               <span v-else>Die App ist auf dem neuesten Stand</span>
             </v-tooltip>
-            <v-tooltip color="success" top v-else>
-               <template v-slot:activator="{ on, attrs }">
-                  <v-icon color="success" v-bind="attrs" v-on="on" text tile>
-                     fal fa-comment-alt-check
-                  </v-icon>
-               </template>
-               <span>Die App ist auf dem neuesten Stand</span>
-            </v-tooltip>
+
             <v-spacer />
-            <v-btn tile text color="amber" v-on:click="switchTheme()">
+            <v-btn tile text plain color="amber" v-on:click="switchTheme()">
                <v-icon>
                   far fa-adjust
                </v-icon>
@@ -46,33 +60,19 @@
 import Vue from "vue";
 import { exec } from "child_process";
 import appSettings from "../../classes/appSettings";
+import { ipcRenderer } from "electron";
 
 interface IComponentData {
    mergePath: string;
+   updateAvailable: boolean;
 }
 
 export default Vue.extend({
-   props: {
-      updateAvailable: {
-         type: Boolean,
-         default: false,
-      },
-   },
    data(): IComponentData {
       return {
          mergePath: "",
+         updateAvailable: false,
       };
-   },
-   watch: {
-      updateAvilable: {
-         immediate: false,
-         deep: true,
-         handler(newValue) {
-            if (newValue) {
-               console.log(newValue);
-            }
-         },
-      },
    },
    methods: {
       switchTheme: function() {
@@ -87,12 +87,21 @@ export default Vue.extend({
       openMergePath: function(): void {
          exec(`start "" "${this.mergePath}"`).unref();
       },
+      showUpdate: function(): void {
+         this.$emit("show-Update");
+      },
    },
    mounted: function(): void {
       const setting: any = appSettings.get("settings");
       if (setting && setting.mergePath) {
          this.mergePath = setting.mergePath;
       }
+   },
+   created() {
+      ipcRenderer.invoke("check-for-update").then(result => {
+         console.log("check-for-update", result);
+         this.updateAvailable = result;
+      });
    },
 });
 </script>

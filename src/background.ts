@@ -19,6 +19,7 @@ const isDevelopment: boolean = process.env.NODE_ENV !== "production";
 
 process.env.FORCE_COLOR = "1";
 autoUpdater.autoDownload = false;
+autoUpdater.autoInstallOnAppQuit = true;
 
 // keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
@@ -93,6 +94,7 @@ function createWindow(): void {
    if (process.env.WEBPACK_DEV_SERVER_URL) {
       // Load the url of the dev server if in development mode
       win.loadURL(process.env.WEBPACK_DEV_SERVER_URL);
+      // autoUpdater.updateConfigPath = path.join(__dirname, "dev-app-update.yml");
       if (!process.env.IS_TEST) win.webContents.openDevTools();
    } else {
       createProtocol("app");
@@ -102,13 +104,46 @@ function createWindow(): void {
    }
 
    //updateCheck
-   ipcMain.handle("check-for-update", () => {
-      autoUpdater.checkForUpdates().then(update => {
-         if (update) {
-            return true;
+   ipcMain.handle("check-for-update", async () => {
+      let updateAvailable: boolean = false;
+      await autoUpdater.checkForUpdates().then(update => {
+         console.log(
+            "update.updateInfo.version",
+            update.updateInfo.version,
+            "app.getVersion()",
+            app.getVersion(),
+         );
+         if (update.updateInfo.version !== app.getVersion()) {
+            updateAvailable = true;
          }
-         return false;
       });
+      return updateAvailable;
+   });
+   ipcMain.handle("get-current-version", async () => {
+      return app.getVersion();
+   });
+   ipcMain.handle("get-new-version", async () => {
+      let newVersion: string = app.getVersion();
+      await autoUpdater.checkForUpdates().then(update => {
+         newVersion = update.updateInfo.version;
+      });
+      return newVersion;
+   });
+   ipcMain.handle("download-update", () => {
+      autoUpdater.downloadUpdate();
+   });
+   let downloadPercent = 0;
+   ipcMain.handle("get-download-percent", () => {
+      return downloadPercent;
+   });
+   autoUpdater.on("download-progress", progress => {
+      downloadPercent = progress.percent;
+   });
+   ipcMain.handle("install-update", () => {
+      autoUpdater.quitAndInstall(true, true);
+   });
+   autoUpdater.on("update-downloaded", updateInfo => {
+      console.log("downloaded", updateInfo);
    });
 
    win.on("close", () => {

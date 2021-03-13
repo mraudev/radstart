@@ -10,7 +10,11 @@
          </v-container>
       </v-main>
 
-      <Footer :updateAvailable="hasUpdate" />
+      <Footer @show-Update="showUpdate" />
+      <UpdateDialog
+         :showDialog="showUpdateDialog"
+         @close-Update-Dialog="closeUpdateDialog"
+      />
    </v-app>
 </template>
 
@@ -18,24 +22,24 @@
 import SystemBar from "./components/window/SystemBar.vue";
 import AppBar from "./components/window/AppBar.vue";
 import Footer from "./components/window/Footer.vue";
+import UpdateDialog from "./components/dialogs/UpdateDialog.vue";
 import Vue from "vue";
 import { exec } from "child_process";
 import router from "./router";
 import store from "./store";
 import appSettings from "./classes/appSettings";
-import { ipcRenderer } from "electron";
 interface IComponentData {
    mergePath: string;
-   hasUpdate: boolean;
+   showUpdateDialog: boolean;
 }
 export default Vue.extend({
    name: "App",
 
-   components: { SystemBar, AppBar, Footer },
+   components: { SystemBar, AppBar, Footer, UpdateDialog },
 
    data: (): IComponentData => ({
       mergePath: "",
-      hasUpdate: false,
+      showUpdateDialog: false,
    }),
 
    methods: {
@@ -77,6 +81,12 @@ export default Vue.extend({
             router.push({ name: routeName });
          }
       },
+      showUpdate: function() {
+         this.showUpdateDialog = true;
+      },
+      closeUpdateDialog: function() {
+         this.showUpdateDialog = false;
+      },
    },
    mounted: function(): void {
       const setting: any = appSettings.get("settings");
@@ -86,9 +96,6 @@ export default Vue.extend({
    },
    created(): void {
       this.setKeyHandler();
-      ipcRenderer.invoke("check-for-update").then(result => {
-         this.hasUpdate = result;
-      });
    },
    destroyed(): void {
       document.removeEventListener("keypress", this.handleKey);
