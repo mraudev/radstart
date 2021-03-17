@@ -165,7 +165,7 @@ function createWindow(): void {
       }
    });
    ipcMain.handle("minimize-window", () => {
-      win.setSkipTaskbar(true);
+      win.setSkipTaskbar(getSkipIconInTaskbar());
       win.minimize();
    });
 
@@ -202,7 +202,7 @@ app.on("activate", () => {
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
 let tray: Electron.Tray;
-app.on("ready", async () => {
+function createTray(): void {
    tray = new Tray(getAppIconPath());
    tray.setTitle(getAppName());
    tray.setToolTip(getAppName());
@@ -212,7 +212,7 @@ app.on("ready", async () => {
          win.setSkipTaskbar(getSkipIconInTaskbar());
          win.restore();
       } else {
-         win.setSkipTaskbar(true);
+         win.setSkipTaskbar(getSkipIconInTaskbar());
          win.minimize();
       }
    });
@@ -234,7 +234,10 @@ app.on("ready", async () => {
       },
    ]);
    tray.setContextMenu(menu);
+}
 
+app.on("ready", async () => {
+   createTray();
    createWindow();
 });
 
@@ -273,4 +276,12 @@ ipcMain.handle("show-file-dialog", async (event, defaultPath) => {
 
 ipcMain.handle("setShowIconInTaskbar", async (event, showIcon) => {
    win.setSkipTaskbar(!showIcon);
+});
+
+ipcMain.handle("setShowIconInTray", (event, showTray) => {
+   if (showTray) {
+      createTray();
+   } else {
+      tray.destroy();
+   }
 });

@@ -8,59 +8,12 @@
                @close-AppDialog="closeAppDialog"
                @save-AppDialog="saveAppDialog"
             />
-            <v-dialog
-               flat
-               tile
-               elevation="0"
-               v-model="dialog"
-               v-if="dialog"
-               max-width="600px"
-               :retain-focus="false"
-            >
-               <v-card flat tile>
-                  <v-card-title>
-                     {{ dialogData.category }}
-                     {{ dialogData.version }}
-                  </v-card-title>
-                  <v-card-text>
-                     <v-select
-                        :items="categories"
-                        label="Kategorie"
-                        v-model="dialogData.category"
-                     ></v-select>
-                     <v-text-field
-                        type="number"
-                        class="centered-input"
-                        v-model="dialogData.version"
-                        :prepend-icon="'fal fa-minus'"
-                        :append-outer-icon="'fal fa-plus'"
-                        @click:append-outer="dialogData.version += 1"
-                        @click:prepend="dialogData.version -= 1"
-                     ></v-text-field>
-                     <v-text-field
-                        v-model="dialogData.path"
-                        :append-icon="'fal fa-folder-open'"
-                        @click:append="changePath(dialogData)"
-                     ></v-text-field>
-                  </v-card-text>
-                  <v-card-actions>
-                     <v-spacer></v-spacer>
-                     <v-btn text tile color="red" v-on:click="dialog = false">
-                        <v-icon left>fal fa-times-circle</v-icon>
-                        Abbrechen
-                     </v-btn>
-                     <v-btn
-                        text
-                        tile
-                        color="green"
-                        v-on:click="saveProject(dialogData)"
-                     >
-                        <v-icon left>fal fa-save</v-icon>
-                        Speichern
-                     </v-btn>
-                  </v-card-actions>
-               </v-card>
-            </v-dialog>
+            <ProjectDialog
+               :showDialog="projectDialog"
+               :dialogData="projectDialogData"
+               @close-ProjectDialog="closeProjectDialog"
+               @save-ProjectDialog="saveProject"
+            />
             <v-simple-table tile dense>
                <thead>
                   <tr>
@@ -82,7 +35,11 @@
                         </v-btn>
                      </td>
                      <td class="text-center">
-                        <v-btn text tile v-on:click="showDialog(project)">
+                        <v-btn
+                           text
+                           tile
+                           v-on:click="showProjectDialog(project)"
+                        >
                            <v-icon>fal fa-edit</v-icon>
                         </v-btn>
                         <v-btn text tile v-on:click="deleteProject(project)">
@@ -117,11 +74,22 @@
       </v-row>
       <v-row no-gutters>
          <v-col>
-            <v-switch
-               color="amber"
-               label="Icon in Taskbar anzeigen"
-               v-model="showIconInTaskbar"
-            ></v-switch>
+            <v-card>
+               <v-card-title>Ansicht</v-card-title>
+               <v-card-text>
+                  <v-switch
+                     color="amber"
+                     label="Icon in Taskbar anzeigen"
+                     v-model="showIconInTaskbar"
+                     :disabled="!showIconInTray"
+                  />
+                  <v-switch
+                     color="amber"
+                     label="Icon in Tray anzeigen"
+                     v-model="showIconInTray"
+                  />
+               </v-card-text>
+            </v-card>
          </v-col>
       </v-row>
    </div>
@@ -135,37 +103,46 @@ import Vue from "vue";
 import path from "path";
 import fs from "fs";
 import AppDialog from "../components/dialogs/AppDialog.vue";
+import ProjectDialog from "@/components/dialogs/ProjectDialog.vue";
 
 interface IComponentData {
    projectData: any;
-   dialog: boolean;
-   dialogData: any;
-   categories: Array<string>;
    mergePath: string;
    overlay: boolean;
    overlayColor: string;
    openColor: string;
    allComponentsColor: string;
    showIconInTaskbar: boolean;
+   showIconInTray: boolean;
    appDialog: boolean;
    appDialogData: IProject;
+   projectDialog: boolean;
+   projectDialogData: IProject;
 }
 export default Vue.extend({
-   components: { AppDialog },
+   components: { AppDialog, ProjectDialog },
    data(): IComponentData {
       return {
          projectData: [],
-         dialog: false,
-         dialogData: null,
-         categories: ["development", "hotfix", "release", "feature"],
          mergePath: "",
          overlay: false,
          overlayColor: "",
          openColor: "red",
          allComponentsColor: "blue",
          showIconInTaskbar: true,
+         showIconInTray: true,
          appDialog: false,
          appDialogData: {
+            id: -1,
+            category: "",
+            path: "",
+            version: 500,
+            overlay: false,
+            dialog: false,
+            apps: [],
+         },
+         projectDialog: false,
+         projectDialogData: {
             id: -1,
             category: "",
             path: "",
@@ -180,6 +157,13 @@ export default Vue.extend({
       showIconInTaskbar: function(state: boolean) {
          appSettings.set("skipIconInTaskbar", !state);
          ipcRenderer.invoke("setShowIconInTaskbar", state);
+      },
+      showIconInTray: function(state: boolean) {
+         if (!state && !this.showIconInTaskbar) {
+            this.showIconInTaskbar = true;
+         }
+         appSettings.set("showIconInTray", state);
+         ipcRenderer.invoke("setShowIconInTray", state);
       },
    },
    methods: {
@@ -213,6 +197,9 @@ export default Vue.extend({
          }
          const skipIcon: boolean = appSettings.get("skipIconInTaskbar");
          this.showIconInTaskbar = !skipIcon;
+
+         const showTray: boolean = appSettings.get("showIconInTray");
+         this.showIconInTray = showTray;
       },
       deleteProject: function(project: IProject): void {
          let removeIndex: any = this.projectData
@@ -222,15 +209,6 @@ export default Vue.extend({
             .indexOf(project.id);
          this.projectData.splice(removeIndex, 1);
          this.saveProjects();
-      },
-      changePath: function(project: IProject): void {
-         ipcRenderer
-            .invoke("show-directory-dialog", project.path)
-            .then(newPath => {
-               if (newPath !== undefined) {
-                  project.path = newPath[0];
-               }
-            });
       },
       saveProject(project: IProject): void {
          let found: boolean = false;
@@ -255,7 +233,7 @@ export default Vue.extend({
             this.projectData.push(project);
          }
          this.saveProjects();
-         this.dialog = false;
+         this.projectDialog = false;
       },
       getCategoryForSort: function(project: IProject): string {
          let append: string = "";
@@ -302,10 +280,16 @@ export default Vue.extend({
             apps: [],
          };
       },
-      showDialog: function(project: IProject): void {
-         this.dialogData = this.getEmptyProject();
-         this.dialogData = Object.assign(this.dialogData, project);
-         this.dialog = true;
+      showProjectDialog: function(project: IProject): void {
+         // this.dialogData = this.getEmptyProject();
+         this.projectDialogData = Object.assign(
+            this.projectDialogData,
+            project,
+         );
+         this.projectDialog = true;
+      },
+      closeProjectDialog: function(): void {
+         this.projectDialog = false;
       },
       showAppDialog: function(project: IProject): void {
          this.appDialogData = project;
@@ -339,8 +323,8 @@ export default Vue.extend({
             dialog: false,
             apps: [],
          };
-         this.dialogData = project;
-         this.dialog = true;
+         this.projectDialogData = project;
+         this.projectDialog = true;
       },
    },
    created: function(): void {
