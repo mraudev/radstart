@@ -78,16 +78,63 @@
                <v-card-title>Ansicht</v-card-title>
                <v-card-text>
                   <v-switch
-                     color="amber"
+                     :color="$store.getters.mainColor"
                      label="Icon in Taskbar anzeigen"
                      v-model="showIconInTaskbar"
                      :disabled="!showIconInTray"
                   />
                   <v-switch
-                     color="amber"
+                     :color="$store.getters.mainColor"
                      label="Icon in Tray anzeigen"
                      v-model="showIconInTray"
                   />
+               </v-card-text>
+            </v-card>
+         </v-col>
+      </v-row>
+      <v-row no-gutters>
+         <v-col>
+            <v-card>
+               <v-card-title>Farben</v-card-title>
+               <v-card-text class="text-center">
+                  <v-row no-gutters justify="center">
+                     <v-col align-self="center">
+                        <v-card max-width="332px">
+                           <v-card-title>
+                              <v-spacer></v-spacer>
+                              Hauptfarbe
+                              <v-spacer></v-spacer>
+                           </v-card-title>
+                           <v-card-text>
+                              <v-color-picker
+                                 mode="hexa"
+                                 v-model="mainColor"
+                              ></v-color-picker>
+                           </v-card-text>
+                           <v-card-actions>
+                              <v-btn
+                                 text
+                                 tile
+                                 v-on:click="resetMainColor()"
+                                 color="amber"
+                              >
+                                 <v-icon left>fal fa-undo</v-icon>
+                                 Zur&uuml;cksetzen</v-btn
+                              >
+                              <v-spacer></v-spacer>
+                              <v-btn
+                                 text
+                                 tile
+                                 v-on:click="saveMainColor()"
+                                 color="green"
+                              >
+                                 <v-icon left>fal fa-save</v-icon>
+                                 Speichern</v-btn
+                              >
+                           </v-card-actions>
+                        </v-card>
+                     </v-col>
+                  </v-row>
                </v-card-text>
             </v-card>
          </v-col>
@@ -104,6 +151,7 @@ import path from "path";
 import fs from "fs";
 import AppDialog from "../components/dialogs/AppDialog.vue";
 import ProjectDialog from "@/components/dialogs/ProjectDialog.vue";
+import store from "@/store";
 
 interface IComponentData {
    projectData: any;
@@ -118,6 +166,7 @@ interface IComponentData {
    appDialogData: IProject;
    projectDialog: boolean;
    projectDialogData: IProject;
+   mainColor: string;
 }
 export default Vue.extend({
    components: { AppDialog, ProjectDialog },
@@ -151,6 +200,7 @@ export default Vue.extend({
             dialog: false,
             apps: [],
          },
+         mainColor: "#FFC107",
       };
    },
    watch: {
@@ -200,6 +250,9 @@ export default Vue.extend({
 
          const showTray: boolean = appSettings.get("showIconInTray");
          this.showIconInTray = showTray;
+
+         // this.mainColor = appSettings.get("mainColor");
+         this.mainColor = store.getters.mainColor;
       },
       deleteProject: function(project: IProject): void {
          let removeIndex: any = this.projectData
@@ -325,6 +378,14 @@ export default Vue.extend({
          };
          this.projectDialogData = project;
          this.projectDialog = true;
+      },
+      saveMainColor: function() {
+         appSettings.set("mainColor", this.mainColor);
+         store.commit("SetMainColor", this.mainColor);
+      },
+      resetMainColor: function() {
+         this.mainColor = "#FFC107";
+         this.saveMainColor();
       },
    },
    created: function(): void {

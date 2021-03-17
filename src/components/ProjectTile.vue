@@ -8,7 +8,7 @@
                {{ project.version }}
             </template>
          </v-card-title>
-         <v-img class="subtitle-gradient pa-0">
+         <v-img class="pa-0" :style="gradientMain">
             <v-card-subtitle class="py-0 px-0">
                <v-btn
                   block
@@ -37,6 +37,23 @@ import ProjectAppActions from "./ProjectAppActions.vue";
 import ProjectGitActions from "./ProjectGitActions.vue";
 import { IProject } from "@/types";
 import Vue from "vue";
+import store from "@/store";
+function shade(color: string, amount: number) {
+   return (
+      "#" +
+      color
+         .replace(/^#/, "")
+         .replace(/../g, color =>
+            (
+               "0" +
+               Math.min(
+                  255,
+                  Math.max(0, parseInt(color, 16) + amount),
+               ).toString(16)
+            ).substr(-2),
+         )
+   );
+}
 export default Vue.extend({
    props: ["project"],
    components: {
@@ -69,6 +86,18 @@ export default Vue.extend({
          }
       },
    },
+   computed: {
+      gradientMain() {
+         return {
+            background: `repeating-linear-gradient(
+               45deg,
+               ${store.getters.mainColor},
+               ${store.getters.mainColor} 10px,
+               ${shade(store.getters.mainColor, -20)} 10px,
+               ${shade(store.getters.mainColor, -20)} 20px)`,
+         };
+      },
+   },
 });
 </script>
 
@@ -89,15 +118,6 @@ export default Vue.extend({
       #282828 10px,
       #252525 10px,
       #252525 20px
-   );
-}
-.subtitle-gradient {
-   background: repeating-linear-gradient(
-      45deg,
-      #ffa000,
-      #ffa000 10px,
-      #ff9900 10px,
-      #ff9900 20px
    );
 }
 </style>

@@ -5,24 +5,39 @@
             <v-btn
                block
                tile
-               color="amber darken-2"
+               :color="$store.getters.mainColor"
                v-on:click="fetch(project)"
             >
                <v-icon left>fal fa-cloud-download</v-icon>Fetch
             </v-btn>
          </v-col>
          <v-col class="pa-2">
-            <v-btn block tile color="amber darken-2" v-on:click="mod(project)">
+            <v-btn
+               block
+               tile
+               :color="$store.getters.mainColor"
+               v-on:click="mod(project)"
+            >
                <v-icon left>fal fa-clipboard-check</v-icon>Mod
             </v-btn>
          </v-col>
          <v-col class="pa-2">
-            <v-btn block tile color="amber darken-2" v-on:click="log(project)">
+            <v-btn
+               block
+               tile
+               :color="$store.getters.mainColor"
+               v-on:click="log(project)"
+            >
                <v-icon left>fal fa-history</v-icon>Log
             </v-btn>
          </v-col>
          <v-col class="pa-2">
-            <v-btn block tile color="amber darken-2" v-on:click="push(project)">
+            <v-btn
+               block
+               tile
+               :color="$store.getters.mainColor"
+               v-on:click="push(project)"
+            >
                <v-icon left>fal fa-cloud-upload</v-icon>Push
             </v-btn>
          </v-col>
@@ -32,7 +47,7 @@
             <v-btn
                block
                tile
-               color="amber darken-2"
+               :color="$store.getters.mainColor"
                v-on:click="merge(project)"
                :disabled="getMergeDisabled()"
             >
@@ -95,7 +110,7 @@
                </v-btn>
                <v-spacer></v-spacer>
                <v-btn
-                  color="amber darken-2"
+                  :color="$store.getters.mainColor"
                   text
                   tile
                   @click="closeDialog(project)"
@@ -117,6 +132,7 @@ import Vue from "vue";
 
 import { IReplaceColor, IProject, IOverlayMessage } from "../types";
 import path from "path";
+import store from "@/store";
 interface IComponentData {
    overlaytitle: string;
    overlaymessage: IOverlayMessage[];
@@ -184,7 +200,7 @@ export default Vue.extend({
             project,
             "git fetch --progress && git rebase --rebase-merges --autostash",
             "fetch",
-            "amber",
+            store.getters.mainColor,
          );
       },
       push: function(project: IProject): void {
@@ -192,7 +208,7 @@ export default Vue.extend({
             project,
             "git fetch --progress && git rebase --rebase-merges --autostash && git push --porcelain --progress",
             "push",
-            "red",
+            store.getters.mainColor,
          );
       },
       getMergePath: function(): string {

@@ -10,7 +10,7 @@
    >
       <v-card flat tile>
          <v-card-title class="headline">
-            <v-icon left color="amber">fal fa-home</v-icon>
+            <v-icon left :color="$store.getters.mainColor">fal fa-home</v-icon>
             Update verfügbar
          </v-card-title>
          <v-card-text>
@@ -45,21 +45,12 @@
                   <v-progress-linear
                      v-model="progress"
                      height="25"
-                     color="amber"
+                     :color="$store.getters.mainColor"
                   >
                      <template v-slot:default="{ value }">
                         <strong>{{ Math.ceil(value) }} %</strong>
                      </template>
                   </v-progress-linear>
-                  <!-- <v-progress-circular
-                     size="100"
-                     rotate="-90"
-                     width="15"
-                     color="amber"
-                     :value="progress"
-                  >
-                     {{ progress }} %
-                  </v-progress-circular> -->
                </v-col>
             </v-row>
          </v-card-text>

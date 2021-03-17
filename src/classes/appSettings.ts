@@ -9,6 +9,7 @@ export class AppSettings {
    constructor() {
       this.appSetting.configure({ numSpaces: 3, prettify: true });
 
+      this.setDefaults();
       this.validateProjects();
    }
 
@@ -37,6 +38,12 @@ export class AppSettings {
          }
       }
       this.set("projects", allProjects);
+   }
+
+   setDefaults() {
+      if (!this.get("mainColor")) {
+         this.set("mainColor", "#FFC107");
+      }
    }
 
    set(key: string, value: any) {

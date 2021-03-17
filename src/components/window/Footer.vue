@@ -9,7 +9,7 @@
                :disabled="checkMergePathDisabled()"
                @click="openMergePath()"
             >
-               <v-icon left large color="amber darken-1">
+               <v-icon left large :color="$store.getters.mainColor">
                   mdi-alpha-m-box-outline
                </v-icon>
                erge
@@ -46,7 +46,13 @@
             </v-tooltip>
 
             <v-spacer />
-            <v-btn tile text plain color="amber" v-on:click="switchTheme()">
+            <v-btn
+               tile
+               text
+               plain
+               :color="$store.getters.mainColor"
+               v-on:click="switchTheme()"
+            >
                <v-icon>
                   far fa-adjust
                </v-icon>
