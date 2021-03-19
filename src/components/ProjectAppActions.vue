@@ -4,7 +4,9 @@
          <v-btn
             block
             tile
+            raised
             :color="$store.getters.mainColor"
+            class="striped-gradient"
             v-on:click="open(app)"
          >
             <v-icon left>fal fa-brackets</v-icon> {{ getAppCaption(app) }}
@@ -37,4 +39,14 @@ export default {
 };
 </script>
 
-<style scoped></style>
+<style scoped>
+.app-gradient {
+   background: repeating-linear-gradient(
+      45deg,
+      #282828fb,
+      #282828 10px,
+      #252525 10px,
+      #252525 20px
+   );
+}
+</style>

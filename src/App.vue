@@ -142,4 +142,13 @@ main.v-main {
    overflow: auto !important;
    height: 100%;
 }
+.striped-gradient {
+   background: repeating-linear-gradient(
+      45deg,
+      #00000000,
+      #00000000 10px,
+      #00000011 10px,
+      #00000011 20px
+   );
+}
 </style>

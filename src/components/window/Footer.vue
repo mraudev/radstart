@@ -9,9 +9,9 @@
                :disabled="checkMergePathDisabled()"
                @click="openMergePath()"
             >
-               <v-icon left large :color="$store.getters.mainColor">
-                  mdi-alpha-m-box-outline
-               </v-icon>
+               <v-avatar left tile size="36" :color="$store.getters.mainColor">
+                  <h3>M</h3>
+               </v-avatar>
                erge
             </v-btn>
             <v-spacer />

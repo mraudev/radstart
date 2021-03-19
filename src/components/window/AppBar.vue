@@ -1,42 +1,34 @@
 <template>
    <v-app-bar app flat height="64px">
-      <v-btn to="/" width="150" text tile>
-         <v-icon left large :color="$store.getters.mainColor">
-            mdi-alpha-d-box-outline
-         </v-icon>
-         evelopment
-      </v-btn>
-      <v-btn to="hotfix" width="150" text tile>
-         <v-icon left large :color="$store.getters.mainColor">
-            mdi-alpha-h-box-outline
-         </v-icon>
-         otfix
-      </v-btn>
-      <v-btn to="release" width="150" text tile>
-         <v-icon left large :color="$store.getters.mainColor">
-            mdi-alpha-r-box-outline
-         </v-icon>
-         elease
-      </v-btn>
-      <v-btn to="feature" width="150" text tile>
-         <v-icon left large :color="$store.getters.mainColor">
-            mdi-alpha-f-box-outline
-         </v-icon>
-         eature
+      <v-btn
+         v-for="item in projectItems"
+         :key="item.key"
+         :to="item.target"
+         width="150"
+         text
+         tile
+         class="appButton"
+      >
+         <v-avatar left tile size="36" :color="$store.getters.mainColor">
+            <h3>{{ item.caption[0] }}</h3>
+         </v-avatar>
+         {{ item.caption.substring(1) }}
       </v-btn>
 
       <v-spacer></v-spacer>
-      <v-btn to="bender" text tile>
-         <v-icon left large :color="$store.getters.mainColor">
-            mdi-alpha-b-box-outline
-         </v-icon>
-         ender
-      </v-btn>
-      <v-btn to="settings" text tile>
-         <v-icon left large :color="$store.getters.mainColor">
-            mdi-alpha-e-box-outline
-         </v-icon>
-         instellungen
+
+      <v-btn
+         v-for="item in rightItems"
+         :key="item.key"
+         :to="item.target"
+         text
+         tile
+         class="appButton"
+      >
+         <v-avatar left tile size="36" :color="$store.getters.mainColor">
+            <h3>{{ item.caption[0] }}</h3>
+         </v-avatar>
+         {{ item.caption.substring(1) }}
       </v-btn>
    </v-app-bar>
 </template>
@@ -44,8 +36,55 @@
 <script lang="ts">
 import Vue from "vue";
 
+interface IMenuItem {
+   key: string;
+   caption: string;
+   target: string;
+}
+interface IComponentData {
+   projectItems: Array<IMenuItem>;
+   rightItems: Array<IMenuItem>;
+}
 export default Vue.extend({
    name: "AppBar",
+   data(): IComponentData {
+      return {
+         projectItems: [
+            {
+               key: "D",
+               caption: "Development",
+               target: "/",
+            },
+            {
+               key: "H",
+               caption: "hotfix",
+               target: "hotfix",
+            },
+            {
+               key: "R",
+               caption: "release",
+               target: "release",
+            },
+            {
+               key: "F",
+               caption: "feature",
+               target: "feature",
+            },
+         ],
+         rightItems: [
+            {
+               key: "B",
+               caption: "bender",
+               target: "bender",
+            },
+            {
+               key: "E",
+               caption: "einstellungen",
+               target: "settings",
+            },
+         ],
+      };
+   },
 });
 </script>
 

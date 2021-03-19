@@ -1,8 +1,13 @@
 <template>
    <v-system-bar window app class="draggable pr-0" color="primary">
       <div class="topdiv"></div>
-      <img src="icon.png" height="20px" width="20px" class="mr-3" />
-      <span>{{ wintitle }}</span>
+      <img
+         src="icon.png"
+         height="20px"
+         width="20px"
+         class="mr-3 unselectable"
+      />
+      <span class="unselectable">{{ wintitle }}</span>
       <v-spacer></v-spacer>
       <v-btn tile text class="appButton nondraggable px-0" @click="minimize()">
          <v-icon class="mr-0">fal fa-window-minimize</v-icon>
@@ -89,6 +94,10 @@ export default Vue.extend({
 }
 .appButton {
    min-width: 40px !important;
+}
+
+.unselectable {
+   user-select: none;
 }
 
 .topdiv {
