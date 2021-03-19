@@ -107,12 +107,6 @@ function createWindow(): void {
    ipcMain.handle("check-for-update", async () => {
       let updateAvailable: boolean = false;
       await autoUpdater.checkForUpdates().then(update => {
-         console.log(
-            "update.updateInfo.version",
-            update.updateInfo.version,
-            "app.getVersion()",
-            app.getVersion(),
-         );
          if (update.updateInfo.version !== app.getVersion()) {
             updateAvailable = true;
          }

@@ -9,7 +9,7 @@
             class="striped-gradient"
             v-on:click="open(app)"
          >
-            <v-icon left>fal fa-brackets</v-icon> {{ getAppCaption(app) }}
+            <v-icon left>{{ getIcon(app) }}</v-icon> {{ getAppCaption(app) }}
          </v-btn>
       </v-col>
    </v-row>
@@ -34,6 +34,22 @@ export default {
       getAppCaption: function(file: string) {
          let ext = path.extname(file);
          return path.basename(file, ext);
+      },
+      getIcon(file: string) {
+         let ext = path.extname(file);
+         return this.getIconByExt(ext);
+      },
+      getIconByExt(ext: string) {
+         if (ext === ".exe") {
+            return "fal fa-window";
+         } else if (ext === ".bat") {
+            return "fal fa-terminal";
+         } else if (ext === ".sln") {
+            return "mdi-microsoft-visual-studio";
+         } else if (ext == ".groupproj") {
+            return "mdi-language-cpp";
+         }
+         return "fal fa-cube";
       },
    },
 };

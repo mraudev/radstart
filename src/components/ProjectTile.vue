@@ -23,7 +23,10 @@
          </v-card-subtitle>
          <v-card-text class="pa-1">
             <project-app-actions :project="project"></project-app-actions>
-            <project-git-actions :project="project"></project-git-actions>
+            <project-git-actions
+               v-if="hasGit(project.path)"
+               :project="project"
+            ></project-git-actions>
          </v-card-text>
       </v-img>
    </v-card>
@@ -34,6 +37,8 @@ import { exec } from "child_process";
 import ProjectAppActions from "./ProjectAppActions.vue";
 import ProjectGitActions from "./ProjectGitActions.vue";
 import { IProject } from "@/types";
+import path from "path";
+import fs from "fs";
 import Vue from "vue";
 
 export default Vue.extend({
@@ -45,6 +50,9 @@ export default Vue.extend({
    methods: {
       openInExplorer: function(project: IProject): void {
          exec(`start "" "${project.path}"`).unref();
+      },
+      hasGit(projectPath: string) {
+         return fs.existsSync(path.join(projectPath, ".git"));
       },
    },
 });

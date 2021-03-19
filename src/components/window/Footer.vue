@@ -105,7 +105,6 @@ export default Vue.extend({
    },
    created() {
       ipcRenderer.invoke("check-for-update").then(result => {
-         console.log("check-for-update", result);
          this.updateAvailable = result;
       });
    },

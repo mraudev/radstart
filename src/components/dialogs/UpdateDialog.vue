@@ -121,7 +121,6 @@ export default Vue.extend({
                .then((percent: number) => {
                   // all.progress = Math.ceil(percent * 100) / 100;
                   all.progress = percent;
-                  console.log(percent);
                   if (percent === 100.0) {
                      finished = true;
                   }
